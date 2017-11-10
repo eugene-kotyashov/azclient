@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 		uniqueApp.attach();
 		uniqueApp.detach();
 		if (!uniqueApp.create(1024)) {
-			QMessageBox::warning(nullptr, QObject::tr("%1 Already Running").arg(qApp->applicationName()), QObject::tr("%1 is already running.").arg(qApp->applicationName()));
+			QMessageBox::warning(nullptr, QObject::tr("%1 - Already Running").arg(qApp->applicationName()), QObject::tr("%1 is already running.").arg(qApp->applicationName()));
 			return 1;
 		}
 	}

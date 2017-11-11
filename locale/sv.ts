@@ -117,7 +117,7 @@ Would you like to download it now?</source>
     <name>QObject</name>
     <message>
         <location filename="../main.cpp" line="58"/>
-        <source>%1 Already Running</source>
+        <source>%1 - Already Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

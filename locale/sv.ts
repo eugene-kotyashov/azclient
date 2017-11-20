@@ -4,63 +4,63 @@
 <context>
     <name>ConnectionWindow</name>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="52"/>
+        <location filename="../ConnectionWindow.cpp" line="54"/>
         <source>%1 - Connect</source>
         <translation>%1 - Anslut</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="79"/>
+        <location filename="../ConnectionWindow.cpp" line="81"/>
         <source>Username:</source>
         <translation>Användarnamn:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="80"/>
+        <location filename="../ConnectionWindow.cpp" line="82"/>
         <source>Password:</source>
         <translation>Lösenord:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="81"/>
+        <location filename="../ConnectionWindow.cpp" line="83"/>
         <source>Region:</source>
         <translation>Plats:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="82"/>
+        <location filename="../ConnectionWindow.cpp" line="84"/>
         <source>Protocol:</source>
         <translation>Protokoll:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="87"/>
+        <location filename="../ConnectionWindow.cpp" line="89"/>
         <source>&amp;Connect</source>
         <translation>&amp;Anslut</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="116"/>
+        <location filename="../ConnectionWindow.cpp" line="118"/>
         <source>Downloading configuration...</source>
         <translation>Laddar ner konfiguration...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="137"/>
+        <location filename="../ConnectionWindow.cpp" line="150"/>
         <source>Client is out of date. Please update.</source>
         <translation>Klienten är utdaterad, uppdatering krävs.</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="179"/>
-        <location filename="../ConnectionWindow.cpp" line="181"/>
+        <location filename="../ConnectionWindow.cpp" line="192"/>
+        <location filename="../ConnectionWindow.cpp" line="194"/>
         <source>Loading...</source>
         <translation>Laddar...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="217"/>
+        <location filename="../ConnectionWindow.cpp" line="230"/>
         <source>Connecting...</source>
         <translation>Ansluter...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="245"/>
+        <location filename="../ConnectionWindow.cpp" line="265"/>
         <source>Update Available</source>
         <translation>Ny version tillgänglig</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="245"/>
+        <location filename="../ConnectionWindow.cpp" line="265"/>
         <source>An update to %1 is available.
 
 Would you like to download it now?</source>
@@ -69,12 +69,12 @@ Would you like to download it now?</source>
 Vill du ladda ner den nu?</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="246"/>
+        <location filename="../ConnectionWindow.cpp" line="266"/>
         <source>&amp;Download Now</source>
         <translation>&amp;Ladda ner nu</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="247"/>
+        <location filename="../ConnectionWindow.cpp" line="267"/>
         <source>Ignore this Update</source>
         <translation>Ignorera uppdatering</translation>
     </message>
@@ -89,7 +89,7 @@ Vill du ladda ner den nu?</translation>
     <message>
         <location filename="../LogWindow.cpp" line="86"/>
         <source>&amp;Hide Log Window</source>
-        <translation>Dölj loggfil</translation>
+        <translation>&amp;Dölj loggfil</translation>
     </message>
     <message>
         <location filename="../LogWindow.cpp" line="87"/>
@@ -159,7 +159,7 @@ Vill du ladda ner den nu?</translation>
     <message>
         <location filename="../StatusIcon.cpp" line="48"/>
         <source>%1 is now connected.</source>
-        <translation>%1 är nu ansluten</translation>
+        <translation>%1 är nu ansluten.</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="52"/>

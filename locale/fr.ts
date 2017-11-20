@@ -4,63 +4,63 @@
 <context>
     <name>ConnectionWindow</name>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="52"/>
+        <location filename="../ConnectionWindow.cpp" line="54"/>
         <source>%1 - Connect</source>
         <translation>%1 - Connexion</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="79"/>
+        <location filename="../ConnectionWindow.cpp" line="81"/>
         <source>Username:</source>
         <translation>Nom d&apos;utilisateur :</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="80"/>
+        <location filename="../ConnectionWindow.cpp" line="82"/>
         <source>Password:</source>
         <translation>Mot de passe :</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="81"/>
+        <location filename="../ConnectionWindow.cpp" line="83"/>
         <source>Region:</source>
         <translation>Emplacement :</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="82"/>
+        <location filename="../ConnectionWindow.cpp" line="84"/>
         <source>Protocol:</source>
         <translation>Protocole :</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="87"/>
+        <location filename="../ConnectionWindow.cpp" line="89"/>
         <source>&amp;Connect</source>
         <translation>&amp;Connexion</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="116"/>
+        <location filename="../ConnectionWindow.cpp" line="118"/>
         <source>Downloading configuration...</source>
         <translation>Téléchargement de la configuration...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="137"/>
+        <location filename="../ConnectionWindow.cpp" line="150"/>
         <source>Client is out of date. Please update.</source>
         <translation>Le client est obsolète. Veuillez le mettre à jour.</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="179"/>
-        <location filename="../ConnectionWindow.cpp" line="181"/>
+        <location filename="../ConnectionWindow.cpp" line="192"/>
+        <location filename="../ConnectionWindow.cpp" line="194"/>
         <source>Loading...</source>
         <translation>Chargement...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="217"/>
+        <location filename="../ConnectionWindow.cpp" line="230"/>
         <source>Connecting...</source>
         <translation>Connexion...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="245"/>
+        <location filename="../ConnectionWindow.cpp" line="265"/>
         <source>Update Available</source>
         <translation>Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="245"/>
+        <location filename="../ConnectionWindow.cpp" line="265"/>
         <source>An update to %1 is available.
 
 Would you like to download it now?</source>
@@ -69,12 +69,12 @@ Would you like to download it now?</source>
 Voulez-vous la télécharger maintenant ?</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="246"/>
+        <location filename="../ConnectionWindow.cpp" line="266"/>
         <source>&amp;Download Now</source>
         <translation>&amp;Télécharger maintenant</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="247"/>
+        <location filename="../ConnectionWindow.cpp" line="267"/>
         <source>Ignore this Update</source>
         <translation>Ignorer cette mise à jour</translation>
     </message>

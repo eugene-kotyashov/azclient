@@ -6,7 +6,7 @@
     <message>
         <location filename="../ConnectionWindow.cpp" line="52"/>
         <source>%1 - Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Anslut</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="79"/>
@@ -31,50 +31,52 @@
     <message>
         <location filename="../ConnectionWindow.cpp" line="87"/>
         <source>&amp;Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anslut</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="116"/>
         <source>Downloading configuration...</source>
-        <translation type="unfinished"></translation>
+        <translation>Laddar ner konfiguration...</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="137"/>
         <source>Client is out of date. Please update.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klienten är utdaterad, uppdatering krävs.</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="179"/>
         <location filename="../ConnectionWindow.cpp" line="181"/>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Laddar...</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="217"/>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansluter...</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="245"/>
         <source>Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny version tillgänglig</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="245"/>
         <source>An update to %1 is available.
 
 Would you like to download it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>En uppdatering till %1 är tillgänglig.
+
+Vill du ladda ner den nu?</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="246"/>
         <source>&amp;Download Now</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ladda ner nu</translation>
     </message>
     <message>
         <location filename="../ConnectionWindow.cpp" line="247"/>
         <source>Ignore this Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorera uppdatering</translation>
     </message>
 </context>
 <context>
@@ -82,27 +84,27 @@ Would you like to download it now?</source>
     <message>
         <location filename="../LogWindow.cpp" line="72"/>
         <source>%1 - Message Log</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Loggfil</translation>
     </message>
     <message>
         <location filename="../LogWindow.cpp" line="86"/>
         <source>&amp;Hide Log Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Dölj loggfil</translation>
     </message>
     <message>
         <location filename="../LogWindow.cpp" line="87"/>
         <source>&amp;Save Log to File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spara logg till fil</translation>
     </message>
     <message>
         <location filename="../LogWindow.cpp" line="88"/>
         <source>&amp;Clear Log</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rensa logg</translation>
     </message>
     <message>
         <location filename="../LogWindow.cpp" line="100"/>
         <source>Select the log file path</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj plats för loggfil</translation>
     </message>
 </context>
 <context>
@@ -110,7 +112,7 @@ Would you like to download it now?</source>
     <message>
         <location filename="../OpenVpnRunner.cpp" line="213"/>
         <source>Invalid Username/Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Felaktigt användarnamn eller lösenord</translation>
     </message>
 </context>
 <context>
@@ -118,12 +120,12 @@ Would you like to download it now?</source>
     <message>
         <location filename="../main.cpp" line="58"/>
         <source>%1 - Already Running</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - Körs redan</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="58"/>
         <source>%1 is already running.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 körs redan.</translation>
     </message>
 </context>
 <context>
@@ -131,61 +133,62 @@ Would you like to download it now?</source>
     <message>
         <location filename="../StatusIcon.cpp" line="34"/>
         <source>Disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Frånkopplad</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="35"/>
         <source>&amp;Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anslut</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="40"/>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansluter...</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="41"/>
         <location filename="../StatusIcon.cpp" line="47"/>
         <source>&amp;Disconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Koppla ifrån</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="46"/>
         <source>Connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansluten</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="48"/>
         <source>%1 is now connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 är nu ansluten</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="52"/>
         <source>%1
 Status: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Status: %2</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="53"/>
         <source>%1 Status: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Status: %2</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="74"/>
         <source>%1 down / %2 up</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ner / %2 upp</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="124"/>
         <location filename="../StatusIcon.cpp" line="129"/>
         <source>Show Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa logg</translation>
     </message>
     <message>
         <location filename="../StatusIcon.cpp" line="125"/>
         <location filename="../StatusIcon.cpp" line="130"/>
         <source>&amp;Exit %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avsluta %1</translation>
     </message>
 </context>
 </TS>

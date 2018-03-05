@@ -28,7 +28,7 @@ class StatusIcon : public QSystemTrayIcon
 	Q_OBJECT
 
 public:
-	enum Status { Disconnected, Connecting, Connected };
+	enum Status { Logout, Disconnected, Connecting, Connected };
 	StatusIcon(QObject *owner = 0);
 	~StatusIcon();
 	void setStatus(Status status);
@@ -36,6 +36,9 @@ public:
 
 signals:
 	void disconnect();
+
+public Q_SLOTS:
+	void quitApp();
 
 private:
 	QString unit(double bytes) const;

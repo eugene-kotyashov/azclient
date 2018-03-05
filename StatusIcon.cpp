@@ -19,16 +19,24 @@
 #include "StatusIcon.h"
 #include "LogWindow.h"
 #include "platform-constants.h"
+#include "VpnApi.h"
 #include <QApplication>
 #include <QMenu>
 #include <QAction>
 #include <QDebug>
+#include <QSettings>
 
 void StatusIcon::setStatus(StatusIcon::Status status)
 {
 	QString icon, text;
 	m_status = status;
 	switch (status) {
+	case Logout:
+		icon = ":icons/" PLATFORM_ICONS "/disconnected.svg";
+		text = tr("Disconnected");
+		m_disconnectMenu->setText(tr("&Login"));
+		m_transferMenu->setVisible(false);
+		break;
 	case Disconnected:
 		icon = ":icons/" PLATFORM_ICONS "/disconnected.svg";
 		text = tr("Disconnected");
@@ -79,7 +87,7 @@ void StatusIcon::setTransfer(quint64 down, quint64 up)
 
 bool StatusIcon::maybeShowParent() const
 {
-	if (m_status != Disconnected)
+	if (m_status == Connecting || m_status == Connected)
 		return false;
 	QWidget *parentWidget = qobject_cast<QWidget *>(parent());
 	if (parentWidget) {
@@ -87,6 +95,20 @@ bool StatusIcon::maybeShowParent() const
 		qApp->setActiveWindow(parentWidget);
 	}
 	return true;
+}
+
+void StatusIcon::quitApp()
+{
+	static QSettings settings;
+	if (!settings.value("LastToken").toString().isEmpty() && !settings.value("RememberCredentials").toBool()) {
+		VpnApi *api = new VpnApi(this);
+		api->logout(this, settings.value("LastToken").toString(), [=](const QString &, const QString &) {
+			settings.remove("LastToken");
+			qApp->quit();
+		});
+	} else {
+		qApp->quit();
+	}
 }
 
 StatusIcon::StatusIcon(QObject *owner) :
@@ -122,12 +144,12 @@ StatusIcon::StatusIcon(QObject *owner) :
 	menu->addAction(m_disconnectMenu);
 #if QT_VERSION >= 0x050600
 	menu->addAction(tr("Show Log"), &LogWindow::instance(), &LogWindow::show);
-	menu->addAction(tr("&Exit %1").arg(qApp->applicationName()), qApp, &QApplication::quit);
+	menu->addAction(tr("&Exit %1").arg(qApp->applicationName()), this, &StatusIcon::quitApp);
 #else
 	/* TODO: once nobody cares about Ubuntu 16.04, get rid of this ifdef,
 	 * since Qt 5.6 is a LTS release anyway. */
 	menu->addAction(tr("Show Log"), &LogWindow::instance(), SLOT(show()));
-	menu->addAction(tr("&Exit %1").arg(qApp->applicationName()), qApp, SLOT(quit()));
+	menu->addAction(tr("&Exit %1").arg(qApp->applicationName()), this, SLOT(quitApp()));
 #endif
 	setContextMenu(menu);
 	setStatus(Disconnected);

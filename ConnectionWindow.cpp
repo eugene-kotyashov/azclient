@@ -23,6 +23,7 @@
 #include "StatusIcon.h"
 #include <QApplication>
 #include <QLineEdit>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QFormLayout>
 #include <QVBoxLayout>
@@ -49,6 +50,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	  m_api(new VpnApi(this)),
 	  m_updateGuard(false),
 	  m_goingToSleepWhileConnected(false),
+	  m_loggedIn(false),
 	  m_powerNotifier(new PowerNotifier(this))
 {
 	setWindowTitle(tr("%1 - Connect").arg(qApp->applicationName()));
@@ -57,39 +59,79 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 #endif
 
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->setSizeConstraint(QLayout::SetFixedSize);
+	m_layout = new QVBoxLayout;
+	m_layout->setSizeConstraint(QLayout::SetFixedSize);
 
 	m_status = new QLabel;
 	m_status->setAlignment(Qt::AlignCenter);
 	m_status->setObjectName("status");
 	setStatusText();
-	layout->addWidget(m_status);
+	m_layout->addWidget(m_status);
 
-	layout->addWidget(new QSvgWidget(":logo.svg"));
+	m_layout->addWidget(new QSvgWidget(":logo.svg"));
 
 	m_username = new QLineEdit;
 	m_username->setText(m_settings.value("LastUsername").toString());
 	m_password = new QLineEdit;
 	m_password->setEchoMode(QLineEdit::Password);
+	m_remember = new QCheckBox;
+	m_remember->setText(tr("Save Credentials"));
+
+	m_loginForm = new QFormLayout;
+	m_loginForm->addRow(tr("Username:"), m_username);
+	m_loginForm->addRow(tr("Password:"), m_password);
+	m_loginForm->addRow("", m_remember);
+
+	m_loginButtons = new QDialogButtonBox(QDialogButtonBox::Ok);
+	m_login = m_loginButtons->button(QDialogButtonBox::Ok);
+	m_login->setText(tr("&Login"));
+
 	m_region = new QComboBox;
 	m_region->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 	m_protocol = new QComboBox;
 	m_protocol->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-	QFormLayout *form = new QFormLayout;
-	form->addRow(tr("Username:"), m_username);
-	form->addRow(tr("Password:"), m_password);
-	form->addRow(tr("Region:"), m_region);
-	form->addRow(tr("Protocol:"), m_protocol);
-	layout->addLayout(form);
+	m_connectForm = new QFormLayout;
+	m_connectForm->addRow(tr("Region:"), m_region);
+	m_connectForm->addRow(tr("Protocol:"), m_protocol);
 
-	QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok);
-	m_connect = buttons->button(QDialogButtonBox::Ok);
+	m_connectButtons = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+	QPushButton *logout = m_connectButtons->button(QDialogButtonBox::Cancel);
+	logout->setText(tr("&Sign Out"));
+	m_connect = m_connectButtons->button(QDialogButtonBox::Ok);
 	m_connect->setText(tr("&Connect"));
-	layout->addWidget(buttons);
 
-	setLayout(layout);
+	connect(m_username, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
+	connect(m_password, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
+
+	connect(m_login, &QPushButton::clicked, this, [=]() {
+		setStatusText(tr("Logging in..."));
+		setEnabled(false);
+		m_settings.setValue("LastUsername", m_username->text());
+		m_api->login(this, m_username->text(), m_password->text(), [=](const QString &status, const QString &message) {
+			setEnabled(true);
+			if (status == "error")
+				setStatusText(tr("Invalid username or password"));
+			else if (status == "success") {
+				setStatusText();
+				QString token = message;
+
+				m_settings.setValue("RememberCredentials", m_remember->isChecked());
+				m_settings.setValue("LastToken", token);
+
+				m_password->clear();
+				m_remember->setChecked(false);
+
+				m_lastToken = token;
+				m_loggedIn = true;
+
+				checkAccount();
+				m_statusIcon->setStatus(StatusIcon::Disconnected);
+
+				showConnect();
+			}
+		});
+	});
 
 	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int) {
 		const QVariantList &protocols = m_region->currentData().toList();
@@ -110,21 +152,45 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		validateFields();
 	});
 	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ConnectionWindow::validateFields);
-	connect(m_username, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
-	connect(m_password, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
 
+	connect(logout, &QPushButton::clicked, this, [=]() {
+		setStatusText(tr("Signing out..."));
+		setEnabled(false);
+		m_api->logout(this, m_lastToken, [=](const QString &status, const QString &) {
+			setEnabled(true);
+			if (status == "error")
+				setStatusText(tr("Invalid token"));
+			else if (status == "success")
+				setStatusText();
+
+			showLogin();
+		});
+	});
 
 	connect(m_connect, &QPushButton::clicked, this, [=]() {
 		setStatusText(tr("Downloading configuration..."));
 		setEnabled(false);
 		m_settings.setValue("LastRegion", m_region->currentText());
 		m_settings.setValue("LastProtocol", m_protocol->currentText());
-		m_settings.setValue("LastUsername", m_username->text());
 		m_api->ovpnConfig(this, m_protocol->currentData().toString(), [=](const QByteArray &data) {
 			setStatusText();
 			startOpenVpn(data);
 		});
 	});
+
+	m_lastToken = m_settings.value("LastToken").toString();
+	m_loggedIn = !m_lastToken.isEmpty();
+	setLayout(m_layout);
+	if (m_loggedIn) {
+		m_layout->addLayout(m_connectForm);
+		m_layout->addWidget(m_connectButtons);
+
+		checkAccount();
+		m_statusIcon->setStatus(StatusIcon::Disconnected);
+	} else {
+		m_layout->addLayout(m_loginForm);
+		m_layout->addWidget(m_loginButtons);
+	}
 
 	connect(m_powerNotifier, &PowerNotifier::resumed, this, [=]() {
 		if (!m_goingToSleepWhileConnected)
@@ -137,9 +203,71 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		m_connect->click();
 	});
 
-	populateRegions();
-
 	QTimer::singleShot(1000 * 10, this, &ConnectionWindow::checkForUpdates);
+}
+
+void ConnectionWindow::checkAccount()
+{
+	setStatusText(tr("Checking account..."));
+	setEnabled(false);
+	m_api->getAccountInfo(this, m_lastToken, [=](const QDate &expirationDate) {
+		setStatusText();
+		setEnabled(true);
+		if (expirationDate > QDate::currentDate())
+			populateRegions();
+		else
+			showLogin();
+	});
+}
+
+void ConnectionWindow::showLogin()
+{
+	m_settings.setValue("RememberCredentials", false);
+	m_settings.remove("LastToken");
+	m_lastToken.clear();
+	m_loggedIn = false;
+	m_statusIcon->setStatus(StatusIcon::Logout);
+
+	m_layout->removeItem(m_connectForm);
+	m_layout->removeWidget(m_connectButtons);
+
+	m_connectForm->labelForField(m_region)->hide();
+	m_region->hide();
+	m_connectForm->labelForField(m_protocol)->hide();
+	m_protocol->hide();
+	m_connectButtons->hide();
+
+	m_layout->addLayout(m_loginForm);
+	m_layout->addWidget(m_loginButtons);
+
+	m_loginForm->labelForField(m_username)->show();
+	m_username->show();
+	m_loginForm->labelForField(m_password)->show();
+	m_password->show();
+	m_remember->show();
+	m_loginButtons->show();
+}
+
+void ConnectionWindow::showConnect()
+{
+	m_layout->removeItem(m_loginForm);
+	m_layout->removeWidget(m_loginButtons);
+
+	m_loginForm->labelForField(m_username)->hide();
+	m_username->hide();
+	m_loginForm->labelForField(m_password)->hide();
+	m_password->hide();
+	m_remember->hide();
+	m_loginButtons->hide();
+
+	m_layout->addLayout(m_connectForm);
+	m_layout->addWidget(m_connectButtons);
+
+	m_connectForm->labelForField(m_region)->show();
+	m_region->show();
+	m_connectForm->labelForField(m_protocol)->show();
+	m_protocol->show();
+	m_connectButtons->show();
 }
 
 void ConnectionWindow::populateRegions()
@@ -160,11 +288,11 @@ void ConnectionWindow::populateRegions()
 		m_region->clear();
 		for (const QVariant &item : locations) {
 			const QVariantMap &location = item.toMap();
-			const QString &name = location["name"].toString();
+			const QString &name = location["iso"].toString() + " - " + location["city"].toString();
 			if (name.isEmpty())
 				continue;
 			foundOne = true;
-			m_region->addItem(name, location["endpoints"]);
+			m_region->addItem(name, location["endpoints"].toMap()["openvpn"]);
 		}
 		if (foundOne) {
 			int saved = m_region->findText(m_settings.value("LastRegion").toString());
@@ -197,7 +325,10 @@ void ConnectionWindow::regionsLoading()
 
 void ConnectionWindow::validateFields()
 {
-	m_connect->setEnabled(!m_username->text().isEmpty() && !m_password->text().isEmpty() && !m_protocol->currentData().toString().isEmpty());
+	if (m_loggedIn)
+		m_connect->setEnabled(!m_protocol->currentData().toString().isEmpty());
+	else
+		m_login->setEnabled(!m_username->text().isEmpty() && !m_password->text().isEmpty());
 }
 
 void ConnectionWindow::startOpenVpn(const QByteArray &config)
@@ -236,10 +367,7 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		runner->disconnect();
 	});
 
-	m_lastUsername = m_username->text();
-	m_lastPassword = m_password->text();
-
-	if (!runner->connect(config, m_lastUsername, m_lastPassword)) {
+	if (!runner->connect(config, "token", m_lastToken)) {
 		show();
 		setEnabled(true);
 		setStatusText();

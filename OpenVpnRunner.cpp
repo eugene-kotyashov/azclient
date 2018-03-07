@@ -210,7 +210,7 @@ void OpenVpnRunner::managmentReadLine()
 			m_managementConnection->write(QString("username Auth %1\n").arg(escape(m_username)).toLocal8Bit());
 			m_managementConnection->write(QString("password Auth %1\n").arg(escape(m_password)).toLocal8Bit());
 		} else if (line.startsWith(">PASSWORD:Verification Failed:")) {
-			m_disconnectReason = tr("Invalid Username/Password");
+			m_disconnectReason = tr("Server connection error. Try another server.");
 			disconnect();
 		} else if (line.startsWith(">STATE:")) {
 			if (line.contains(",CONNECTED,SUCCESS,"))

@@ -22,6 +22,7 @@
 #include <QSslCipher>
 #include <QSslEllipticCurve>
 #include <QNetworkRequest>
+#include <QHttpMultiPart>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -30,6 +31,7 @@
 #include <QApplication>
 #include <QSysInfo>
 #include <QDebug>
+#include <QUrlQuery>
 
 VpnApi::VpnApi(QObject *parent) :
 	QObject(parent),
@@ -55,6 +57,52 @@ static QNetworkReply *logReplyErrors(QObject *owner, QNetworkReply *reply)
 			qCritical() << "SSL Error:" << error.errorString();
 	});
 	return reply;
+}
+
+void VpnApi::login(QObject *owner, const QString &username, const QString &password, std::function<void(const QString &, const QString &)> success)
+{
+	QUrlQuery postData;
+	postData.addQueryItem("username", username);
+	postData.addQueryItem("password", password);
+	QNetworkRequest request = networkRequest(API_BASE "v1/token/generate");
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+	QNetworkReply *reply = logReplyErrors(owner, m_network->post(request, postData.toString(QUrl::FullyEncoded).toUtf8()));
+
+	QObject::connect(reply, &QNetworkReply::finished, owner, [=]() {
+		QJsonObject object = QJsonDocument::fromJson(reply->readAll()).object();
+		reply->deleteLater();
+		success(object["status"].toString(), object["message"].toString());
+	});
+}
+
+void VpnApi::getAccountInfo(QObject *owner, const QString &token, std::function<void(const QDate &)> success)
+{
+	QNetworkRequest request = networkRequest(API_BASE "v1/account/information");
+	request.setRawHeader(QByteArray("Authorization"), QByteArray(QString("Bearer " + token).toUtf8()));
+	QNetworkReply *reply = logReplyErrors(owner, m_network->get(request));
+
+	QObject::connect(reply, &QNetworkReply::finished, owner, [=]() {
+		QJsonObject object = QJsonDocument::fromJson(reply->readAll()).object();
+		reply->deleteLater();
+		QDate expirationDate = STR2DATE(object["expires_at"].toString());
+		success(expirationDate);
+	});
+}
+
+void VpnApi::logout(QObject *owner, const QString &token, std::function<void(const QString &, const QString &)> success)
+{
+	QUrlQuery postData;
+	postData.addQueryItem("token", token);
+	QNetworkRequest request = networkRequest(API_BASE "v1/token/delete");
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+	request.setRawHeader(QByteArray("Authorization"), QByteArray(QString("Bearer " + token).toUtf8()));
+	QNetworkReply *reply = logReplyErrors(owner, m_network->post(request, postData.toString(QUrl::FullyEncoded).toUtf8()));
+
+	QObject::connect(reply, &QNetworkReply::finished, owner, [=]() {
+		QJsonObject object = QJsonDocument::fromJson(reply->readAll()).object();
+		reply->deleteLater();
+		success(object["status"].toString(), object["message"].toString());
+	});
 }
 
 void VpnApi::locations(QObject *owner, std::function<void(const QVariantList &, const QString &)> success)
@@ -83,7 +131,7 @@ void VpnApi::ovpnConfig(QObject *owner, const QString &url, std::function<void(c
 
 void VpnApi::checkForUpdates(QObject *owner, std::function<void (const QString &, const QString &)> success)
 {
-	QNetworkRequest request = networkRequest(API_BASE "v1/clientVersion");
+	QNetworkRequest request = networkRequest(API_BASE "v1/client");
 	QNetworkReply *reply = logReplyErrors(owner, m_network->get(request));
 
 	QObject::connect(reply, &QNetworkReply::finished, owner, [=]() {

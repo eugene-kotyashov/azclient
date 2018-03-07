@@ -31,6 +31,9 @@ class VpnApi : QObject
 
 public:
 	VpnApi(QObject *parent = 0);
+	void login(QObject *owner, const QString &username, const QString &password, std::function<void(const QString &, const QString &)> success);
+	void getAccountInfo(QObject *owner, const QString &token, std::function<void(const QDate &)> success);
+	void logout(QObject *owner, const QString &token, std::function<void(const QString &, const QString &)> success);
 	void locations(QObject *owner, std::function<void(const QVariantList &, const QString &)> success);
 	void ovpnConfig(QObject *owner, const QString &url, std::function<void(const QByteArray &)> success);
 	void checkForUpdates(QObject *owner, std::function<void(const QString &newVersion, const QString &url)> success);

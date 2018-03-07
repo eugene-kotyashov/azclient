@@ -26,7 +26,11 @@
 #include <QSettings>
 #include <QApplication>
 
+class QVBoxLayout;
+class QFormLayout;
 class QLineEdit;
+class QCheckBox;
+class QDialogButtonBox;
 class QComboBox;
 class StatusIcon;
 class QLabel;
@@ -43,22 +47,34 @@ protected:
 
 private:
 	void setStatusText(const QString &text = QString::null);
+	void checkAccount();
+	void showLogin();
+	void showConnect();
 	void populateRegions();
 	void regionsLoading();
 	void startOpenVpn(const QByteArray &config);
 	StatusIcon *m_statusIcon;
+	QVBoxLayout *m_layout;
 	QLabel *m_status;
+	QFormLayout *m_loginForm;
 	QLineEdit *m_username;
 	QLineEdit *m_password;
+	QCheckBox *m_remember;
+	QDialogButtonBox *m_loginButtons;
+	QPushButton *m_login;
+	QFormLayout *m_connectForm;
 	QComboBox *m_region;
 	QComboBox *m_protocol;
+	QDialogButtonBox *m_connectButtons;
 	QPushButton *m_connect;
 	VpnApi *m_api;
 	QSettings m_settings;
 	bool m_updateGuard;
 	bool m_goingToSleepWhileConnected;
+	bool m_loggedIn;
 	QString m_lastUsername;
 	QString m_lastPassword;
+	QString m_lastToken;
 	PowerNotifier *m_powerNotifier;
 
 private slots:

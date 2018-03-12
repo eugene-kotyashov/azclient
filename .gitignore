@@ -16,7 +16,7 @@ bin/*
 qrc_resources.cpp
 *.dmg
 *.app
-*.qm
+locale/*.qm
 *.obj
 cscope.out
 *.so

@@ -1,4 +1,4 @@
-VERSION = 0.3
+VERSION = 0.4
 
 QT += core gui widgets network svg
 CONFIG += c++11

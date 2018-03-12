@@ -4,7 +4,7 @@
 <context>
     <name>ConnectionWindow</name>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="54"/>
+        <location filename="../ConnectionWindow.cpp" line="56"/>
         <source>%1 - Connect</source>
         <translation>%1 - Anslut</translation>
     </message>
@@ -19,48 +19,88 @@
         <translation>Lösenord:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="83"/>
+        <location filename="../ConnectionWindow.cpp" line="87"/>
+        <source>&amp;Login</source>
+        <translation>&amp;Logga in</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="95"/>
         <source>Region:</source>
         <translation>Plats:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="84"/>
+        <location filename="../ConnectionWindow.cpp" line="96"/>
         <source>Protocol:</source>
         <translation>Protokoll:</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="89"/>
+        <location filename="../ConnectionWindow.cpp" line="78"/>
+        <source>Save credentials</source>
+        <translation>Spara användarnamn och lösenord</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="100"/>
+        <source>&amp;Sign out</source>
+        <translation>&amp;Logga ut</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="102"/>
         <source>&amp;Connect</source>
         <translation>&amp;Anslut</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="118"/>
+        <location filename="../ConnectionWindow.cpp" line="108"/>
+        <source>Logging in...</source>
+        <translation>Loggar in...</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="114"/>
+        <source>Invalid username or password</source>
+        <translation>Felaktigt användarnamn eller lösenord</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="157"/>
+        <source>Signing out...</source>
+        <translation>Loggar ut...</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="162"/>
+        <source>Invalid token</source>
+        <translation>Felaktig token</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="171"/>
         <source>Downloading configuration...</source>
         <translation>Laddar ner konfiguration...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="150"/>
+        <location filename="../ConnectionWindow.cpp" line="211"/>
+        <source>Checking account...</source>
+        <translation>Verifierar konto...</translation>
+    </message>
+    <message>
+        <location filename="../ConnectionWindow.cpp" line="278"/>
         <source>Client is out of date. Please update.</source>
         <translation>Klienten är utdaterad, uppdatering krävs.</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="192"/>
-        <location filename="../ConnectionWindow.cpp" line="194"/>
+        <location filename="../ConnectionWindow.cpp" line="320"/>
+        <location filename="../ConnectionWindow.cpp" line="322"/>
         <source>Loading...</source>
         <translation>Laddar...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="230"/>
+        <location filename="../ConnectionWindow.cpp" line="361"/>
         <source>Connecting...</source>
         <translation>Ansluter...</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="265"/>
+        <location filename="../ConnectionWindow.cpp" line="393"/>
         <source>Update Available</source>
         <translation>Ny version tillgänglig</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="265"/>
+        <location filename="../ConnectionWindow.cpp" line="393"/>
         <source>An update to %1 is available.
 
 Would you like to download it now?</source>
@@ -69,12 +109,12 @@ Would you like to download it now?</source>
 Vill du ladda ner den nu?</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="266"/>
+        <location filename="../ConnectionWindow.cpp" line="394"/>
         <source>&amp;Download Now</source>
         <translation>&amp;Ladda ner nu</translation>
     </message>
     <message>
-        <location filename="../ConnectionWindow.cpp" line="267"/>
+        <location filename="../ConnectionWindow.cpp" line="395"/>
         <source>Ignore this Update</source>
         <translation>Ignorera uppdatering</translation>
     </message>
@@ -110,9 +150,13 @@ Vill du ladda ner den nu?</translation>
 <context>
     <name>OpenVpnRunner</name>
     <message>
-        <location filename="../OpenVpnRunner.cpp" line="213"/>
         <source>Invalid Username/Password</source>
-        <translation>Felaktigt användarnamn eller lösenord</translation>
+        <translation type="vanished">Felaktigt användarnamn eller lösenord</translation>
+    </message>
+    <message>
+        <location filename="../OpenVpnRunner.cpp" line="213"/>
+        <source>Server connection error. Try another server.</source>
+        <translation>Serverfel. Testa en annan server.</translation>
     </message>
 </context>
 <context>
@@ -131,62 +175,68 @@ Vill du ladda ner den nu?</translation>
 <context>
     <name>StatusIcon</name>
     <message>
-        <location filename="../StatusIcon.cpp" line="34"/>
+        <location filename="../StatusIcon.cpp" line="36"/>
+        <location filename="../StatusIcon.cpp" line="42"/>
         <source>Disconnected</source>
         <translation>Frånkopplad</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="35"/>
+        <location filename="../StatusIcon.cpp" line="37"/>
+        <source>&amp;Login</source>
+        <translation>&amp;Logga in</translation>
+    </message>
+    <message>
+        <location filename="../StatusIcon.cpp" line="43"/>
         <source>&amp;Connect</source>
         <translation>&amp;Anslut</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="40"/>
+        <location filename="../StatusIcon.cpp" line="48"/>
         <source>Connecting...</source>
         <translation>Ansluter...</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="41"/>
-        <location filename="../StatusIcon.cpp" line="47"/>
+        <location filename="../StatusIcon.cpp" line="49"/>
+        <location filename="../StatusIcon.cpp" line="55"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Koppla ifrån</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="46"/>
+        <location filename="../StatusIcon.cpp" line="54"/>
         <source>Connected</source>
         <translation>Ansluten</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="48"/>
+        <location filename="../StatusIcon.cpp" line="56"/>
         <source>%1 is now connected.</source>
         <translation>%1 är nu ansluten.</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="52"/>
+        <location filename="../StatusIcon.cpp" line="60"/>
         <source>%1
 Status: %2</source>
         <translation>%1
 Status: %2</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="53"/>
+        <location filename="../StatusIcon.cpp" line="61"/>
         <source>%1 Status: %2</source>
         <translation>%1 Status: %2</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="74"/>
+        <location filename="../StatusIcon.cpp" line="82"/>
         <source>%1 down / %2 up</source>
         <translation>%1 ner / %2 upp</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="124"/>
-        <location filename="../StatusIcon.cpp" line="129"/>
+        <location filename="../StatusIcon.cpp" line="146"/>
+        <location filename="../StatusIcon.cpp" line="151"/>
         <source>Show Log</source>
         <translation>Visa logg</translation>
     </message>
     <message>
-        <location filename="../StatusIcon.cpp" line="125"/>
-        <location filename="../StatusIcon.cpp" line="130"/>
+        <location filename="../StatusIcon.cpp" line="147"/>
+        <location filename="../StatusIcon.cpp" line="152"/>
         <source>&amp;Exit %1</source>
         <translation>&amp;Avsluta %1</translation>
     </message>

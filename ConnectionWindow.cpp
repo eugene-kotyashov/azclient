@@ -75,7 +75,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	m_password = new QLineEdit;
 	m_password->setEchoMode(QLineEdit::Password);
 	m_remember = new QCheckBox;
-	m_remember->setText(tr("Save Credentials"));
+	m_remember->setText(tr("Save credentials"));
 
 	m_loginForm = new QFormLayout;
 	m_loginForm->addRow(tr("Username:"), m_username);
@@ -97,7 +97,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 
 	m_connectButtons = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
 	QPushButton *logout = m_connectButtons->button(QDialogButtonBox::Cancel);
-	logout->setText(tr("&Sign Out"));
+	logout->setText(tr("&Sign out"));
 	m_connect = m_connectButtons->button(QDialogButtonBox::Ok);
 	m_connect->setText(tr("&Connect"));
 

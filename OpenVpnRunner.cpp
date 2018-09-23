@@ -17,6 +17,7 @@
  */
 
 #include "OpenVpnRunner.h"
+#include "proxyrunner.h"
 #include "LogWindow.h"
 #include "platform-constants.h"
 #include <QDebug>
@@ -108,7 +109,9 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 #elif defined(Q_OS_MACOS)
 	arguments << QDir(qApp->applicationDirPath()).filePath("openvpn");
 #endif
-	arguments << "--config" << QDir::toNativeSeparators(m_configFile->fileName());
+    QString fname("C:/Users/asus/OpenVPN/config/testdev1.ovpn");
+    arguments << "--config" << QDir::toNativeSeparators(fname);
+    qInfo() << "using config file " << QDir::toNativeSeparators(fname);
 	arguments << "--verb" << "3";
 	arguments << "--management" << "127.0.0.1" << QString::number(m_managementServer->serverPort());
 	arguments << "--management-client";
@@ -149,6 +152,7 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 #if defined(Q_OS_LINUX)
 	m_process->start("/usr/bin/pkexec", arguments, QIODevice::ReadOnly);
 #elif defined(Q_OS_WIN)
+    qInfo() << "starting openvpn from " << QDir(qApp->applicationDirPath()).filePath("openvpn.exe");
 	m_process->start(QDir(qApp->applicationDirPath()).filePath("openvpn.exe"), arguments, QIODevice::ReadOnly);
 #elif defined(Q_OS_MACOS)
 	m_process->start(QDir(qApp->applicationDirPath()).filePath("openvpn-launcher"), arguments, QIODevice::ReadOnly);
@@ -162,6 +166,12 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 		return false;
 
 	}
+
+    ProxyRunner *proxy = new ProxyRunner(this);
+    if (!proxy->connect()) {
+        disconnect();
+        return false;
+    }
 
 	return true;
 }

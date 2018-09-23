@@ -25,13 +25,14 @@ class QProcess;
 class QTcpServer;
 class QTcpSocket;
 class QTemporaryFile;
+class ProxyRunner;
 
 class OpenVpnRunner : public QObject
 {
 	Q_OBJECT
 
 public:
-	OpenVpnRunner(QObject *parent = 0);
+    OpenVpnRunner(QObject *parent = nullptr);
 	~OpenVpnRunner();
 	const QString &disconnectReason() const { return m_disconnectReason; }
 
@@ -57,6 +58,7 @@ private:
 	QTcpSocket *m_managementConnection;
 	QTemporaryFile *m_configFile;
 	bool m_hasDisconnected;
+
 
 private slots:
 	void managmentReadLine();

@@ -172,7 +172,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		setEnabled(false);
 		m_settings.setValue("LastRegion", m_region->currentText());
 		m_settings.setValue("LastProtocol", m_protocol->currentText());
-		m_api->ovpnConfig(this, m_protocol->currentData().toString(), [=](const QByteArray &data) {
+        m_api->ovpnConfig(this, m_protocol->currentData().toString(), [=](const QByteArray &data) {
 			setStatusText();
 			startOpenVpn(data);
 		});
@@ -191,6 +191,9 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		m_layout->addLayout(m_loginForm);
 		m_layout->addWidget(m_loginButtons);
 	}
+
+    m_statusIcon->setStatus(StatusIcon::Disconnected);
+    showConnect();
 
 	connect(m_powerNotifier, &PowerNotifier::resumed, this, [=]() {
 		if (!m_goingToSleepWhileConnected)
@@ -333,12 +336,12 @@ void ConnectionWindow::validateFields()
 
 void ConnectionWindow::startOpenVpn(const QByteArray &config)
 {
-	if (config.length() == 0) {
-		setStatusText();
-		setEnabled(true);
-		LogWindow::instance().show();
-		return;
-	}
+//	if (config.length() == 0) {
+//		setStatusText();
+//		setEnabled(true);
+//		LogWindow::instance().show();
+//		return;
+//	}
 
 	OpenVpnRunner *runner = new OpenVpnRunner(this);
 	connect(runner, &OpenVpnRunner::transfer, m_statusIcon, &StatusIcon::setTransfer);

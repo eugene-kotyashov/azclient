@@ -2,10 +2,29 @@
 #define PROXYRUNNER_H
 
 
-class ProxyRunner
+#include <QObject>
+
+class QProcess;
+
+class ProxyRunner : public QObject
 {
+    Q_OBJECT
+private:
+    QProcess *m_process;
+    bool m_hasDisconnected;
 public:
-    ProxyRunner();
+    ProxyRunner(QObject* parent);
+    ~ProxyRunner();
+public slots:
+    bool connect();
+    void disconnect();
+
+signals:
+    void connected();
+    void connecting();
+    void disconnected();
+    void processExit();
+
 };
 
 #endif // PROXYRUNNER_H

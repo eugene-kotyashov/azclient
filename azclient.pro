@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     LogWindow.cpp \
     StatusIcon.cpp \
     OpenVpnRunner.cpp \
-    PowerNotifier.cpp
+    PowerNotifier.cpp \
+    proxyrunner.cpp
 
 HEADERS += ConnectionWindow.h \
     VpnApi.h \
@@ -20,7 +21,8 @@ HEADERS += ConnectionWindow.h \
     StatusIcon.h \
     OpenVpnRunner.h \
     platform-constants.h \
-    PowerNotifier.h
+    PowerNotifier.h \
+    proxyrunner.h
 
 TRANSLATIONS += locale/sv.ts locale/nl.ts locale/fr.ts
 qtPrepareTool(LRELEASE, lrelease)

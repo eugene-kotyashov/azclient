@@ -10,10 +10,13 @@ class ProxyRunner : public QObject
 {
     Q_OBJECT
 private:
+    QString m_externalIp;
+private:
     QProcess *m_process;
     bool m_hasDisconnected;
-public:
+public:    
     ProxyRunner(QObject* parent);
+    void GetExternalIp();
     ~ProxyRunner();
 public slots:
     bool connect(const QString& configFileName);

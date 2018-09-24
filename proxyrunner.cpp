@@ -6,6 +6,12 @@
 #include <QTemporaryFile>
 #include <QString>
 #include <QTextStream>
+#include <QNetworkRequest>
+#include <QHttpMultiPart>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 
 ProxyRunner::ProxyRunner(QObject *parent):
@@ -13,6 +19,21 @@ ProxyRunner::ProxyRunner(QObject *parent):
     m_process(new QProcess(this)),
     m_hasDisconnected(false)
 {
+}
+
+void ProxyRunner::GetExternalIp()
+{
+    QNetworkAccessManager * network = new QNetworkAccessManager(this);
+    QNetworkRequest request;
+    request.setUrl(QString("https://api.ipify.org?format=json"));
+
+    QNetworkReply *reply = network->get(request);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=]() {
+        QJsonObject object = QJsonDocument::fromJson(reply->readAll()).object();
+        reply->deleteLater();
+        m_externalIp = object["ip"].toString();
+    });
 }
 
 ProxyRunner::~ProxyRunner()
@@ -36,18 +57,23 @@ bool ProxyRunner::connect(const QString& internalIp)
         qCritical() << "Config File Permissions Error:" << configFile->errorString();
         return false;
     }
-    qInfo() << "writing to 3proxy config file " << configFile->fileName();
-    QTextStream configStream(configFile);
-    configStream << "log" << endl
-                 << "internal " << internalIp << endl
-                 <<  "maxconn 20000" << endl
-                  << "auth iponly" << endl
-                  << "nserver 178.168.253.2" << endl
-                  << "nserver 178.168.253.1" << endl
-                  << "nscache 262144" << endl
-                  << "allow * * *" << endl
-                  << "external 178.168.203.170"<< endl
-                  << "proxy -p1507" << endl;
+
+
+        qInfo() << "writing to 3proxy config file " << configFile->fileName();
+        QTextStream configStream(configFile);
+        configStream << "log" << endl
+                     << "internal " << internalIp << endl
+                     <<  "maxconn 20000" << endl
+                      << "auth iponly" << endl
+                      << "nserver 178.168.253.2" << endl
+                      << "nserver 178.168.253.1" << endl
+                      << "nscache 262144" << endl
+                      << "allow * * *" << endl
+                      << "external " << m_externalIp << endl
+                      << "proxy -p1507" << endl;
+
+
+
 
 
     m_process->setReadChannelMode(QProcess::MergedChannels);

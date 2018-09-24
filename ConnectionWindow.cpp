@@ -380,6 +380,9 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		runner->disconnect();
 	});
 
+    //get external ip before openvpn is connected
+    proxyRunner->GetExternalIp();
+
 	if (!runner->connect(config, "token", m_lastToken)) {
 		show();
 		setEnabled(true);

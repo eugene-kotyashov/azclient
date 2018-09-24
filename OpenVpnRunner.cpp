@@ -17,7 +17,6 @@
  */
 
 #include "OpenVpnRunner.h"
-#include "proxyrunner.h"
 #include "LogWindow.h"
 #include "platform-constants.h"
 #include <QDebug>

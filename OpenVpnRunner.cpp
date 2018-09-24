@@ -110,9 +110,9 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 #elif defined(Q_OS_MACOS)
 	arguments << QDir(qApp->applicationDirPath()).filePath("openvpn");
 #endif
-    QString fname("testdev1.ovpn");
-    arguments << "--config" << QDir::toNativeSeparators(fname);
-    qInfo() << "using config file " << QDir::toNativeSeparators(fname);
+
+    arguments << "--config" << QDir(qApp->applicationDirPath()).filePath("lib//testdev1.ovpn");
+    qInfo() << "using config file " << QDir(qApp->applicationDirPath()).filePath("lib//testdev1.ovpn");
 	arguments << "--verb" << "3";
 	arguments << "--management" << "127.0.0.1" << QString::number(m_managementServer->serverPort());
 	arguments << "--management-client";

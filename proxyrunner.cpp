@@ -3,6 +3,9 @@
 #include <QProcess>
 #include <QApplication>
 #include <QDir>
+#include <QTemporaryFile>
+#include <QString>
+#include <QTextStream>
 
 
 ProxyRunner::ProxyRunner(QObject *parent):
@@ -21,6 +24,32 @@ ProxyRunner::~ProxyRunner()
 bool ProxyRunner::connect()
 {
 
+    QTemporaryFile* configFile = new QTemporaryFile(this);
+    configFile->setAutoRemove(true);
+    if (!configFile->open()) {
+        qCritical() << "Config File Write Error:" << configFile->errorString();
+        return false;
+    }
+    /* Presumably QTemporaryFile already sets the umask correctly and isn't totally
+     * dumb when it comes to safe file creation, but just in case... */
+    if (!configFile->setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner)) {
+        qCritical() << "Config File Permissions Error:" << configFile->errorString();
+        return false;
+    }
+    qInfo() << "writing to config file " << configFile->fileName();
+    QTextStream configStream(configFile);
+    configStream << "log" << endl
+                    << "internal 10.2.0.2" << endl
+                    <<  "maxconn 20000" << endl
+                    << "auth iponly" << endl
+                    << "nserver 178.168.253.2" << endl
+                    << "nserver 178.168.253.1" << endl
+                    << "nscache 262144" << endl
+                    << "allow * * *" << endl
+                    << "external 178.168.203.170"<< endl
+                    << "proxy -p1507" << endl;
+
+
     m_process->setReadChannelMode(QProcess::MergedChannels);
 
     QObject::connect(m_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=](int, QProcess::ExitStatus) {
@@ -37,6 +66,7 @@ bool ProxyRunner::connect()
     });
 
     QStringList arguments;
+    arguments << configFile->fileName();
     m_process->start(QDir(qApp->applicationDirPath()).filePath("3proxy.exe"), arguments, QIODevice::ReadOnly);
     if (!m_process->waitForStarted(-1)) {
         qCritical() << "3proxy Process Error:" << m_process->errorString();
@@ -44,6 +74,8 @@ bool ProxyRunner::connect()
         return false;
 
     }
+
+    configFile->close();
 
     return true;
 }

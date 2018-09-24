@@ -109,7 +109,7 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 #elif defined(Q_OS_MACOS)
 	arguments << QDir(qApp->applicationDirPath()).filePath("openvpn");
 #endif
-    QString fname("C:/Users/asus/OpenVPN/config/testdev1.ovpn");
+    QString fname("testdev1.ovpn");
     arguments << "--config" << QDir::toNativeSeparators(fname);
     qInfo() << "using config file " << QDir::toNativeSeparators(fname);
 	arguments << "--verb" << "3";
@@ -165,13 +165,8 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 		disconnect();
 		return false;
 
-	}
-
-    ProxyRunner *proxy = new ProxyRunner(this);
-    if (!proxy->connect()) {
-        disconnect();
-        return false;
     }
+
 
 	return true;
 }

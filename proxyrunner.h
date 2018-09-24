@@ -16,7 +16,7 @@ public:
     ProxyRunner(QObject* parent);
     ~ProxyRunner();
 public slots:
-    bool connect();
+    bool connect(const QString& configFileName);
     void disconnect();
 
 signals:

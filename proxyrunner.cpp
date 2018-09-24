@@ -21,7 +21,7 @@ ProxyRunner::~ProxyRunner()
     m_process->close();
 }
 
-bool ProxyRunner::connect()
+bool ProxyRunner::connect(const QString& internalIp)
 {
 
     QTemporaryFile* configFile = new QTemporaryFile(this);
@@ -36,18 +36,18 @@ bool ProxyRunner::connect()
         qCritical() << "Config File Permissions Error:" << configFile->errorString();
         return false;
     }
-    qInfo() << "writing to config file " << configFile->fileName();
+    qInfo() << "writing to 3proxy config file " << configFile->fileName();
     QTextStream configStream(configFile);
     configStream << "log" << endl
-                    << "internal 10.2.0.2" << endl
-                    <<  "maxconn 20000" << endl
-                    << "auth iponly" << endl
-                    << "nserver 178.168.253.2" << endl
-                    << "nserver 178.168.253.1" << endl
-                    << "nscache 262144" << endl
-                    << "allow * * *" << endl
-                    << "external 178.168.203.170"<< endl
-                    << "proxy -p1507" << endl;
+                 << "internal " << internalIp << endl
+                 <<  "maxconn 20000" << endl
+                  << "auth iponly" << endl
+                  << "nserver 178.168.253.2" << endl
+                  << "nserver 178.168.253.1" << endl
+                  << "nscache 262144" << endl
+                  << "allow * * *" << endl
+                  << "external 178.168.203.170"<< endl
+                  << "proxy -p1507" << endl;
 
 
     m_process->setReadChannelMode(QProcess::MergedChannels);
@@ -75,7 +75,6 @@ bool ProxyRunner::connect()
 
     }
 
-    configFile->close();
 
     return true;
 }

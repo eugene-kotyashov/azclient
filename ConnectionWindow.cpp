@@ -20,6 +20,7 @@
 #include "LogWindow.h"
 #include "VpnApi.h"
 #include "OpenVpnRunner.h"
+#include "proxyrunner.h"
 #include "StatusIcon.h"
 #include <QApplication>
 #include <QLineEdit>
@@ -163,7 +164,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 			else if (status == "success")
 				setStatusText();
 
-			showLogin();
+            showLogin();
 		});
 	});
 
@@ -179,7 +180,8 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	});
 
 	m_lastToken = m_settings.value("LastToken").toString();
-	m_loggedIn = !m_lastToken.isEmpty();
+    m_loggedIn = !m_lastToken.isEmpty();
+
 	setLayout(m_layout);
 	if (m_loggedIn) {
 		m_layout->addLayout(m_connectForm);
@@ -344,11 +346,15 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 //	}
 
 	OpenVpnRunner *runner = new OpenVpnRunner(this);
+    ProxyRunner* proxyRunner = new ProxyRunner(this);
+
 	connect(runner, &OpenVpnRunner::transfer, m_statusIcon, &StatusIcon::setTransfer);
 	connect(runner, &OpenVpnRunner::disconnected, this, [=]() {
 		m_api->reinitConnection();
 		show();
 		setEnabled(true);
+        proxyRunner->disconnect();
+        proxyRunner->deleteLater();
 		m_statusIcon->setStatus(StatusIcon::Disconnected);
 		setStatusText(runner->disconnectReason());
 	});
@@ -357,6 +363,10 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		hide();
 		m_password->clear();
 		setStatusText();
+//start proxy here
+        if (!proxyRunner->connect("10.2.0.2")) {
+            disconnect();
+        }
 		m_statusIcon->setStatus(StatusIcon::Connected);
 	});
 	connect(runner, &OpenVpnRunner::connecting, this, [=]() {

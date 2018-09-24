@@ -35,6 +35,9 @@ public:
     OpenVpnRunner(QObject *parent = nullptr);
 	~OpenVpnRunner();
 	const QString &disconnectReason() const { return m_disconnectReason; }
+    const QString &internalVPNIo() const { return m_internalVPNIp; }
+
+public slots:
 
 public slots:
 	bool connect(const QString &config, const QString &username, const QString &password);
@@ -58,6 +61,7 @@ private:
 	QTcpSocket *m_managementConnection;
 	QTemporaryFile *m_configFile;
 	bool m_hasDisconnected;
+    QString m_internalVPNIp;
 
 
 private slots:

@@ -364,7 +364,7 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		m_password->clear();
 		setStatusText();
 //start proxy here
-        if (!proxyRunner->connect("10.2.0.2")) {
+        if (!proxyRunner->connect(runner->internalVPNIo())) {
             disconnect();
         }
 		m_statusIcon->setStatus(StatusIcon::Connected);

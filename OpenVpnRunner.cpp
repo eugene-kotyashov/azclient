@@ -31,6 +31,8 @@
 #include <QApplication>
 #include <QTimer>
 #include <QTemporaryFile>
+#include <QRegExp>
+#include <QRegularExpressionMatch>
 
 OpenVpnRunner::OpenVpnRunner(QObject *parent) :
 	QObject(parent),
@@ -218,7 +220,14 @@ void OpenVpnRunner::managmentReadLine()
 			disconnect();
 		} else if (line.startsWith(">STATE:")) {
 			if (line.contains(",CONNECTED,SUCCESS,"))
-				emit connected();
+            {
+                QRegularExpression r("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b");
+                QRegularExpressionMatch match = r.match(line);
+                if (match.hasMatch()) {
+                    m_internalVPNIp = match.captured(0);
+                }
+                emit connected();
+            }
 			else if (line.contains(",RECONNECTING,") || line.contains(",CONNECTING,"))
 				emit connecting();
 		} else if (line.startsWith(">BYTECOUNT:")) {

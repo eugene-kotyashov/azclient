@@ -3,7 +3,7 @@
 
 #include "platform-constants.h"
 
-#define NAME "AzireVPN"
+#define NAME "AstroVPN"
 #define ORGANIZATION "Netbouncer AB"
 #define API_BASE "https://api.azirevpn.com/"
 #define USERAGENT NAME "/" VERSION " (" PLATFORM_AGENT ")"

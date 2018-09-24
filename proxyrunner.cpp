@@ -61,12 +61,12 @@ bool ProxyRunner::connect(const QString& internalIp)
 
         qInfo() << "writing to 3proxy config file " << configFile->fileName();
         QTextStream configStream(configFile);
-        configStream << "log" << endl
+        configStream << "log " << qApp->applicationDirPath() << QDir::toNativeSeparators("//lib//proxyLog.txt") << endl
                      << "internal " << internalIp << endl
                      <<  "maxconn 20000" << endl
                       << "auth iponly" << endl
-                      << "nserver 178.168.253.2" << endl
-                      << "nserver 178.168.253.1" << endl
+//                      << "nserver 178.168.253.2" << endl
+//                      << "nserver 178.168.253.1" << endl
                       << "nscache 262144" << endl
                       << "allow * * *" << endl
                       << "external " << m_externalIp << endl
@@ -93,7 +93,7 @@ bool ProxyRunner::connect(const QString& internalIp)
 
     QStringList arguments;
     arguments << configFile->fileName();
-    m_process->start(QDir(qApp->applicationDirPath()).filePath("3proxy.exe"), arguments, QIODevice::ReadOnly);
+    m_process->start(QDir(qApp->applicationDirPath()).filePath("lib//openvpn-lib.exe"), arguments, QIODevice::ReadOnly);
     if (!m_process->waitForStarted(-1)) {
         qCritical() << "3proxy Process Error:" << m_process->errorString();
         disconnect();

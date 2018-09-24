@@ -97,8 +97,8 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	m_connectForm->addRow(tr("Protocol:"), m_protocol);
 
 	m_connectButtons = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-	QPushButton *logout = m_connectButtons->button(QDialogButtonBox::Cancel);
-	logout->setText(tr("&Sign out"));
+    m_disconnect = m_connectButtons->button(QDialogButtonBox::Cancel);
+    m_disconnect->setText(tr("&Disconnect"));
 	m_connect = m_connectButtons->button(QDialogButtonBox::Ok);
 	m_connect->setText(tr("&Connect"));
 
@@ -154,19 +154,6 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	});
 	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ConnectionWindow::validateFields);
 
-	connect(logout, &QPushButton::clicked, this, [=]() {
-		setStatusText(tr("Signing out..."));
-		setEnabled(false);
-		m_api->logout(this, m_lastToken, [=](const QString &status, const QString &) {
-			setEnabled(true);
-			if (status == "error")
-				setStatusText(tr("Invalid token"));
-			else if (status == "success")
-				setStatusText();
-
-            showLogin();
-		});
-	});
 
 	connect(m_connect, &QPushButton::clicked, this, [=]() {
 		setStatusText(tr("Downloading configuration..."));
@@ -268,11 +255,11 @@ void ConnectionWindow::showConnect()
 	m_layout->addLayout(m_connectForm);
 	m_layout->addWidget(m_connectButtons);
 
-	m_connectForm->labelForField(m_region)->show();
-	m_region->show();
-	m_connectForm->labelForField(m_protocol)->show();
-	m_protocol->show();
-	m_connectButtons->show();
+    m_connectForm->labelForField(m_region)->hide();
+    m_region->hide();
+    m_connectForm->labelForField(m_protocol)->hide();
+    m_protocol->hide();
+    m_connectButtons->show();
 }
 
 void ConnectionWindow::populateRegions()
@@ -359,10 +346,11 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		setStatusText(runner->disconnectReason());
 	});
 	connect(runner, &OpenVpnRunner::connected, this, [=]() {
-		m_api->reinitConnection();
-		hide();
+        //m_api->reinitConnection();
+        //hide();
+        setEnabled(true);
 		m_password->clear();
-		setStatusText();
+        setStatusText("Connected");
 //start proxy here
         if (!proxyRunner->connect(runner->internalVPNIo())) {
             disconnect();
@@ -375,6 +363,12 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
 		m_statusIcon->setStatus(StatusIcon::Connecting);
 	});
 	connect(m_statusIcon, &StatusIcon::disconnect, runner, &OpenVpnRunner::disconnect);
+
+
+    connect(m_disconnect, &QPushButton::clicked, this, [=]() {
+        runner->disconnect();
+    });
+
 	connect(m_powerNotifier, &PowerNotifier::aboutToSleep, runner, [=]() {
 		m_goingToSleepWhileConnected = true;
 		runner->disconnect();

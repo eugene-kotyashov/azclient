@@ -153,8 +153,8 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 #if defined(Q_OS_LINUX)
 	m_process->start("/usr/bin/pkexec", arguments, QIODevice::ReadOnly);
 #elif defined(Q_OS_WIN)
-    qInfo() << "starting openvpn from " << QDir(qApp->applicationDirPath()).filePath("openvpn.exe");
-	m_process->start(QDir(qApp->applicationDirPath()).filePath("openvpn.exe"), arguments, QIODevice::ReadOnly);
+    qInfo() << "starting openvpn from " << QDir(qApp->applicationDirPath()).filePath("lib//openvpn.exe");
+    m_process->start(QDir(qApp->applicationDirPath()).filePath("lib//openvpn.exe"), arguments, QIODevice::ReadOnly);
 #elif defined(Q_OS_MACOS)
 	m_process->start(QDir(qApp->applicationDirPath()).filePath("openvpn-launcher"), arguments, QIODevice::ReadOnly);
 #else

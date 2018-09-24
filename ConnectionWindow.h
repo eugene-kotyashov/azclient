@@ -67,6 +67,7 @@ private:
 	QComboBox *m_protocol;
 	QDialogButtonBox *m_connectButtons;
 	QPushButton *m_connect;
+    QPushButton *m_disconnect;
 	VpnApi *m_api;
 	QSettings m_settings;
 	bool m_updateGuard;

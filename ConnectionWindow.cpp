@@ -48,7 +48,6 @@
 ConnectionWindow::ConnectionWindow(QWidget *parent)
 	: QDialog(parent),
 	  m_statusIcon(new StatusIcon(this)),
-	  m_api(new VpnApi(this)),
 	  m_updateGuard(false),
 	  m_goingToSleepWhileConnected(false),
 	  m_loggedIn(false),
@@ -101,6 +100,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
     m_disconnect->setText(tr("&Disconnect"));
 	m_connect = m_connectButtons->button(QDialogButtonBox::Ok);
 	m_connect->setText(tr("&Connect"));
+    m_disconnect->setEnabled(false);
 
 	connect(m_username, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
 	connect(m_password, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
@@ -109,29 +109,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		setStatusText(tr("Logging in..."));
 		setEnabled(false);
 		m_settings.setValue("LastUsername", m_username->text());
-		m_api->login(this, m_username->text(), m_password->text(), [=](const QString &status, const QString &message) {
-			setEnabled(true);
-			if (status == "error")
-				setStatusText(tr("Invalid username or password"));
-			else if (status == "success") {
-				setStatusText();
-				QString token = message;
 
-				m_settings.setValue("RememberCredentials", m_remember->isChecked());
-				m_settings.setValue("LastToken", token);
-
-				m_password->clear();
-				m_remember->setChecked(false);
-
-				m_lastToken = token;
-				m_loggedIn = true;
-
-				checkAccount();
-				m_statusIcon->setStatus(StatusIcon::Disconnected);
-
-				showConnect();
-			}
-		});
 	});
 
 	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int) {
@@ -160,10 +138,9 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		setEnabled(false);
 		m_settings.setValue("LastRegion", m_region->currentText());
 		m_settings.setValue("LastProtocol", m_protocol->currentText());
-        m_api->ovpnConfig(this, m_protocol->currentData().toString(), [=](const QByteArray &data) {
-			setStatusText();
-			startOpenVpn(data);
-		});
+        setStatusText();
+        m_connect->setEnabled(false);
+        startOpenVpn();
 	});
 
 	m_lastToken = m_settings.value("LastToken").toString();
@@ -202,14 +179,6 @@ void ConnectionWindow::checkAccount()
 {
 	setStatusText(tr("Checking account..."));
 	setEnabled(false);
-	m_api->getAccountInfo(this, m_lastToken, [=](const QDate &expirationDate) {
-		setStatusText();
-		setEnabled(true);
-		if (expirationDate > QDate::currentDate())
-			populateRegions();
-		else
-			showLogin();
-	});
 }
 
 void ConnectionWindow::showLogin()
@@ -265,42 +234,7 @@ void ConnectionWindow::showConnect()
 void ConnectionWindow::populateRegions()
 {
 	regionsLoading();
-	m_api->locations(this, [=](const QVariantList &locations, const QString &minVersion) {
-		if (!minVersion.isEmpty() && QVersionNumber::fromString(minVersion) > QVersionNumber::fromString(qApp->applicationVersion())) {
-			setStatusText(tr("Client is out of date. Please update."));
-			setEnabled(false);
-			m_region->clear();
-			m_protocol->clear();
-			m_settings.remove("IgnoredVersion");
-			checkForUpdates();
-			qCritical() << "Client is out of date. Immediate update required.";
-			return;
-		}
-		bool foundOne = false;
-		m_region->clear();
-		for (const QVariant &item : locations) {
-			const QVariantMap &location = item.toMap();
-			const QString &name = location["iso"].toString() + " - " + location["city"].toString();
-			if (name.isEmpty())
-				continue;
-			foundOne = true;
-			m_region->addItem(name, location["endpoints"].toMap()["openvpn"]);
-		}
-		if (foundOne) {
-			int saved = m_region->findText(m_settings.value("LastRegion").toString());
-			if (saved >= 0)
-				m_region->setCurrentIndex(saved);
-			m_region->setEnabled(true);
-			m_protocol->setEnabled(true);
-			setStyleSheet(styleSheet());
-			validateFields();
-		}
-		else {
-			qCritical() << "Response Error:" << "No regions in locations endpoint.";
-			regionsLoading();
-			QTimer::singleShot(5000, this, &ConnectionWindow::populateRegions);
-		}
-	});
+
 }
 
 void ConnectionWindow::regionsLoading()
@@ -323,7 +257,7 @@ void ConnectionWindow::validateFields()
 		m_login->setEnabled(!m_username->text().isEmpty() && !m_password->text().isEmpty());
 }
 
-void ConnectionWindow::startOpenVpn(const QByteArray &config)
+void ConnectionWindow::startOpenVpn()
 {
 //	if (config.length() == 0) {
 //		setStatusText();
@@ -336,48 +270,49 @@ void ConnectionWindow::startOpenVpn(const QByteArray &config)
     ProxyRunner* proxyRunner = new ProxyRunner(this);
 
 	connect(runner, &OpenVpnRunner::transfer, m_statusIcon, &StatusIcon::setTransfer);
+
 	connect(runner, &OpenVpnRunner::disconnected, this, [=]() {
-		m_api->reinitConnection();
 		show();
-		setEnabled(true);
+		setEnabled(true);        
         proxyRunner->disconnect();
         proxyRunner->deleteLater();
 		m_statusIcon->setStatus(StatusIcon::Disconnected);
 		setStatusText(runner->disconnectReason());
+        m_connect->setEnabled(true);
 	});
 	connect(runner, &OpenVpnRunner::connected, this, [=]() {
-        //m_api->reinitConnection();
-        //hide();
+        hide();
         setEnabled(true);
-		m_password->clear();
+
         setStatusText("Connected");
 //start proxy here
         if (!proxyRunner->connect(runner->internalVPNIo())) {
+            qCritical() << "proxyRunner->connect failed!";
             disconnect();
+            return;
         }
 		m_statusIcon->setStatus(StatusIcon::Connected);
 	});
+
 	connect(runner, &OpenVpnRunner::connecting, this, [=]() {
-		m_api->reinitConnection();
 		setStatusText(tr("Connecting..."));
 		m_statusIcon->setStatus(StatusIcon::Connecting);
 	});
+
 	connect(m_statusIcon, &StatusIcon::disconnect, runner, &OpenVpnRunner::disconnect);
 
 
-    connect(m_disconnect, &QPushButton::clicked, this, [=]() {
-        runner->disconnect();
-    });
+    connect(m_disconnect, &QPushButton::clicked, runner, &OpenVpnRunner::disconnect);
 
 	connect(m_powerNotifier, &PowerNotifier::aboutToSleep, runner, [=]() {
 		m_goingToSleepWhileConnected = true;
 		runner->disconnect();
 	});
 
-    //get external ip before openvpn is connected
-    proxyRunner->GetExternalIp();
+    //get local ip before openvpn is connected
+    proxyRunner->GetLocalIp();
 
-	if (!runner->connect(config, "token", m_lastToken)) {
+    if (!runner->connect("config", "token", m_lastToken)) {
 		show();
 		setEnabled(true);
 		setStatusText();
@@ -389,33 +324,7 @@ void ConnectionWindow::checkForUpdates()
 {
 	if (m_updateGuard)
 		return;
-	m_api->checkForUpdates(this, [=](const QString &newVersion, const QString &url) {
-		if (m_updateGuard)
-			return;
-		if (newVersion.isEmpty() || url.isEmpty()) {
-			QTimer::singleShot(1000 * 60 * 30, this, &ConnectionWindow::checkForUpdates);
-			return;
-		}
-		if (QVersionNumber::fromString(newVersion) <= QVersionNumber::fromString(qApp->applicationVersion()) || newVersion == m_settings.value("IgnoredVersion").toString()) {
-			QTimer::singleShot(1000 * 60 * 10, this, &ConnectionWindow::checkForUpdates);
-			return;
-		}
-		QMessageBox question(QMessageBox::Question, tr("Update Available"), tr("An update to %1 is available.\n\nWould you like to download it now?").arg(qApp->applicationName()), QMessageBox::Yes | QMessageBox::Ignore, this);
-		question.setButtonText(QMessageBox::Yes, tr("&Download Now"));
-		question.setButtonText(QMessageBox::Ignore, tr("Ignore this Update"));
-		question.setDefaultButton(QMessageBox::Yes);
-		m_updateGuard = true;
-		int response = question.exec();
-		m_updateGuard = false;
-		if (response == QMessageBox::Ignore)
-			m_settings.setValue("IgnoredVersion", newVersion);
-		else if (response == QMessageBox::Yes) {
-			QDesktopServices::openUrl(url);
-			QTimer::singleShot(1000 * 60 * 60, this, &ConnectionWindow::checkForUpdates);
-			return;
-		}
-		QTimer::singleShot(1000 * 60 * 10, this, &ConnectionWindow::checkForUpdates);
-	});
+
 }
 
 void ConnectionWindow::closeEvent(QCloseEvent *event)

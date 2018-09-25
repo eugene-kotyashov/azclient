@@ -18,6 +18,7 @@ public:
     ProxyRunner(QObject* parent);
     void GetExternalIp();
     ~ProxyRunner();
+    void GetLocalIp();
 public slots:
     bool connect(const QString& configFileName);
     void disconnect();

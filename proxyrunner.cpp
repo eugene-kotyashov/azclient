@@ -12,6 +12,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QtNetwork>
 
 
 ProxyRunner::ProxyRunner(QObject *parent):
@@ -19,6 +20,19 @@ ProxyRunner::ProxyRunner(QObject *parent):
     m_process(new QProcess(this)),
     m_hasDisconnected(false)
 {
+}
+
+void ProxyRunner::GetLocalIp(){
+    QList<QHostAddress> list = QNetworkInterface::allAddresses();
+     for(int nIter=0; nIter<list.count(); nIter++)
+     {
+         if(!list[nIter].isLoopback())
+            if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol )
+                if (!list[nIter].toString().endsWith(".1")) {
+                    m_externalIp = list[nIter].toString();
+                    break;
+                }
+     }
 }
 
 void ProxyRunner::GetExternalIp()
@@ -71,9 +85,6 @@ bool ProxyRunner::connect(const QString& internalIp)
                       << "allow * * *" << endl
                       << "external " << m_externalIp << endl
                       << "proxy -p1507" << endl;
-
-
-
 
 
     m_process->setReadChannelMode(QProcess::MergedChannels);

@@ -52,7 +52,7 @@ private:
 	void showConnect();
 	void populateRegions();
 	void regionsLoading();
-	void startOpenVpn(const QByteArray &config);
+    void startOpenVpn();
 	StatusIcon *m_statusIcon;
 	QVBoxLayout *m_layout;
 	QLabel *m_status;
@@ -68,7 +68,6 @@ private:
 	QDialogButtonBox *m_connectButtons;
 	QPushButton *m_connect;
     QPushButton *m_disconnect;
-	VpnApi *m_api;
 	QSettings m_settings;
 	bool m_updateGuard;
 	bool m_goingToSleepWhileConnected;

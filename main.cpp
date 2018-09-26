@@ -29,6 +29,7 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QSysInfo>
+#include <QProcess>
 
 int main(int argc, char *argv[])
 {
@@ -64,6 +65,23 @@ int main(int argc, char *argv[])
 
 	qInfo() << USERAGENT " built on " __DATE__ " at " __TIME__;
 	qInfo() << QString("System: %5 | %1 | %2 | %3 | %4 | Qt %6").arg(QSysInfo::prettyProductName(), QSysInfo::productVersion(), QSysInfo::kernelType(), QSysInfo::kernelVersion(), QSysInfo::productType(), qVersion()).toLocal8Bit().data();
+
+    QProcess* process = new QProcess();
+
+
+    QStringList arguments;
+    arguments << "/c" <<
+      "netsh advfirewall firewall add rule name=\"astrovpn\" dir=in action=allow program=\"astroclient.exe\" enable=yes  netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow program=\"\\lib\\openvpn.exe\" enable=yes  netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow program=\"\\lib\\openvpn-lib.exe\" enable=yes";
+    qInfo() << "about to run " << "cmd.exe " << arguments;
+
+    process->start("cmd.exe", arguments, QIODevice::ReadOnly);
+
+    if (!process->waitForStarted(-1)) {
+        qCritical() << "CMD.exe Process Error:" << process->errorString();
+    }
+
+
+    process->waitForFinished(-1);
 
 	ConnectionWindow window;
 	window.show();

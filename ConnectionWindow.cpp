@@ -136,27 +136,14 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	connect(m_connect, &QPushButton::clicked, this, [=]() {
 		setStatusText(tr("Downloading configuration..."));
 		setEnabled(false);
-		m_settings.setValue("LastRegion", m_region->currentText());
-		m_settings.setValue("LastProtocol", m_protocol->currentText());
         setStatusText();
         m_connect->setEnabled(false);
         startOpenVpn();
 	});
 
-	m_lastToken = m_settings.value("LastToken").toString();
-    m_loggedIn = !m_lastToken.isEmpty();
-
-	setLayout(m_layout);
-	if (m_loggedIn) {
-		m_layout->addLayout(m_connectForm);
-		m_layout->addWidget(m_connectButtons);
-
-		checkAccount();
-		m_statusIcon->setStatus(StatusIcon::Disconnected);
-	} else {
-		m_layout->addLayout(m_loginForm);
-		m_layout->addWidget(m_loginButtons);
-	}
+    setLayout(m_layout);
+    m_layout->addLayout(m_connectForm);
+    m_layout->addWidget(m_connectButtons);
 
     m_statusIcon->setStatus(StatusIcon::Disconnected);
     showConnect();
@@ -324,9 +311,7 @@ void ConnectionWindow::startOpenVpn()
 
 void ConnectionWindow::checkForUpdates()
 {
-	if (m_updateGuard)
 		return;
-
 }
 
 void ConnectionWindow::closeEvent(QCloseEvent *event)

@@ -3,11 +3,11 @@
 }
 
 QDialog {
-    background-color: rgb(71, 62, 137);
+    background-color: rgb(0, 0, 170);
 }
 
 QMenu {
-    background-color: rgb(71, 62, 137);
+    background-color: rgb(0, 0, 170);
 }
 
 QMenu::item {
@@ -105,5 +105,5 @@ QLabel#status {
 
 QLabel#status:disabled {
     background-color: rgb(255, 213, 111);
-    color: rgb(92, 73, 121);
+    color: rgb(0, 0, 170);
 }

@@ -11,14 +11,17 @@ class ProxyRunner : public QObject
     Q_OBJECT
 private:
     QString m_externalIp;
+    QString m_dnsIp;
 private:
     QProcess *m_process;
     bool m_hasDisconnected;
-public:    
+    void dnsLookup();
+public:
     ProxyRunner(QObject* parent);
     void GetExternalIp();
     ~ProxyRunner();
     void GetLocalIp();
+    void GetDNSIp();
 public slots:
     bool connect(const QString& configFileName);
     void disconnect();

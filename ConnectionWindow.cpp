@@ -311,12 +311,14 @@ void ConnectionWindow::startOpenVpn()
 
     //get local ip before openvpn is connected
     proxyRunner->GetLocalIp();
+    proxyRunner->GetDNSIp();
 
     if (!runner->connect("config", "token", m_lastToken)) {
 		show();
 		setEnabled(true);
 		setStatusText();
-		LogWindow::instance().show();
+        LogWindow::instance().show();
+        runner->disconnect();
 	}
 }
 

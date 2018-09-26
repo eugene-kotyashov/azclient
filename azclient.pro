@@ -2,7 +2,7 @@ VERSION = 0.5
 
 QT += core gui widgets network svg
 CONFIG += c++11
-TARGET = azclient
+TARGET = astroclient
 TEMPLATE = app
 
 SOURCES += main.cpp \

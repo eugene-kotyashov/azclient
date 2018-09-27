@@ -30,6 +30,7 @@
 #include <QTranslator>
 #include <QSysInfo>
 #include <QProcess>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
@@ -70,9 +71,25 @@ int main(int argc, char *argv[])
 
 
     QStringList arguments;
-    arguments << "/c" <<
-      "netsh advfirewall firewall add rule name=\"astrovpn\" dir=in action=allow program=\"astroclient.exe\" enable=yes  netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow program=\"\\lib\\openvpn.exe\" enable=yes  netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow program=\"\\lib\\openvpn-lib.exe\" enable=yes";
-    qInfo() << "about to run " << "cmd.exe " << arguments;
+    QString appPath = QDir::toNativeSeparators(qApp->applicationDirPath());
+
+    QString tmp;
+    tmp = "netsh advfirewall firewall del rule name=\"astrovpn\""
+           "&netsh advfirewall firewall del rule name=\"openvpn\""
+           "&netsh advfirewall firewall del rule name=\"openvpn\""
+
+           "&netsh advfirewall firewall add rule name=\"astrovpn\" dir=in action=allow "
+                "program=\""+ appPath + "\\astroclient.exe\" enable=yes "
+           "&netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow "
+                "program=\"" +  appPath + "\\lib\\openvpn.exe\" enable=yes "
+           "&netsh advfirewall firewall add rule name=\"openvpn\" dir=in action=allow "
+            "program=\""  + appPath + "\\lib\\openvpn-lib.exe\" enable=yes";
+
+    arguments << "/c" << tmp;
+
+    qInfo() << "about to run " << "cmd.exe ";
+    for (const auto& s : arguments)
+            qInfo() << QString(s).toUtf8().constData();
 
     process->start("cmd.exe", arguments, QIODevice::ReadOnly);
 

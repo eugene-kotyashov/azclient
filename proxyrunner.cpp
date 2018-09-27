@@ -142,7 +142,7 @@ bool ProxyRunner::connect(const QString& internalIp)
 
         qInfo() << "writing to 3proxy config file " << configFile->fileName();
         QTextStream configStream(configFile);
-        configStream << "log " << QDir::toNativeSeparators(qApp->applicationDirPath() + "\\lib\\proxyLog.txt") << endl
+        configStream << "log " << (qApp->applicationDirPath() + "\\lib\\proxyLog.txt") << endl
                      << "internal " << internalIp << endl
                      <<  "maxconn 20000" << endl
                       << "auth iponly" << endl

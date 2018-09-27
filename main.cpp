@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	app.setOrganizationName(ORGANIZATION);
 	app.setApplicationVersion(VERSION);
 	app.setWindowIcon(QIcon(":icons/app.svg"));
-	app.setStyle("fusion");
+    app.setStyle("fusion");
 
 	QTranslator *translator = new QTranslator;
 	if (translator->load(QLocale().name(), ":/translations"))
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	app.setStyleSheet(styleSheet.readAll());
 	styleSheet.close();
 
-	QSharedMemory uniqueApp("AZCLIENT-SINGLE-APP-MEMORY-OBJECT");
+    QSharedMemory uniqueApp("ASTROCLIENT-SINGLE-APP-MEMORY-OBJECT");
 	if (!uniqueApp.create(1024)) {
 		uniqueApp.attach();
 		uniqueApp.detach();

@@ -92,8 +92,6 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	m_protocol->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
 	m_connectForm = new QFormLayout;
-	m_connectForm->addRow(tr("Region:"), m_region);
-	m_connectForm->addRow(tr("Protocol:"), m_protocol);
 
 	m_connectButtons = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     m_disconnect = m_connectButtons->button(QDialogButtonBox::Cancel);
@@ -102,50 +100,25 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 	m_connect->setText(tr("&Connect"));
     m_disconnect->setEnabled(false);
 
-	connect(m_username, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
-	connect(m_password, &QLineEdit::textChanged, this, &ConnectionWindow::validateFields);
 
-	connect(m_login, &QPushButton::clicked, this, [=]() {
-		setStatusText(tr("Logging in..."));
-		setEnabled(false);
-		m_settings.setValue("LastUsername", m_username->text());
 
-	});
 
-	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int) {
-		const QVariantList &protocols = m_region->currentData().toList();
-		if (!protocols.count())
-			return;
-		m_protocol->clear();
-		for (const QVariant &item : protocols) {
-			const QVariantMap &protocol = item.toMap();
-			const QString &name = protocol["name"].toString();
-			const QString &path = protocol["url"].toString();
-			if (name.isEmpty() || path.isEmpty())
-				continue;
-			m_protocol->addItem(name, path);
-		}
-		int saved = m_protocol->findText(m_settings.value("LastProtocol").toString());
-		if (saved >= 0)
-			m_protocol->setCurrentIndex(saved);
-		validateFields();
-	});
-	connect(m_region, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ConnectionWindow::validateFields);
+
 
 
 	connect(m_connect, &QPushButton::clicked, this, [=]() {
-		setStatusText(tr("Downloading configuration..."));
-		setEnabled(false);
+        //setEnabled(false);
         setStatusText();
         m_connect->setEnabled(false);
         startOpenVpn();
 	});
 
-    setLayout(m_layout);
-    m_layout->addLayout(m_connectForm);
-    m_layout->addWidget(m_connectButtons);
+
+
+    //setLayout(m_layout);
 
     m_statusIcon->setStatus(StatusIcon::Disconnected);
+    setStatusText();
     showConnect();
 
 	connect(m_powerNotifier, &PowerNotifier::resumed, this, [=]() {
@@ -159,7 +132,7 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
 		m_connect->click();
 	});
 
-	QTimer::singleShot(1000 * 10, this, &ConnectionWindow::checkForUpdates);
+    QTimer::singleShot(1000 * 10, this, &ConnectionWindow::checkForUpdates);
 }
 
 void ConnectionWindow::checkAccount()
@@ -198,8 +171,8 @@ void ConnectionWindow::showLogin()
 
 void ConnectionWindow::showConnect()
 {
-	m_layout->removeItem(m_loginForm);
-	m_layout->removeWidget(m_loginButtons);
+    //m_layout->removeItem(m_loginForm);
+    //m_layout->removeWidget(m_loginButtons);
 
 	m_loginForm->labelForField(m_username)->hide();
 	m_username->hide();
@@ -208,13 +181,10 @@ void ConnectionWindow::showConnect()
 	m_remember->hide();
 	m_loginButtons->hide();
 
+    setLayout(m_layout);
 	m_layout->addLayout(m_connectForm);
-	m_layout->addWidget(m_connectButtons);
+    m_layout->addWidget(m_connectButtons);
 
-    m_connectForm->labelForField(m_region)->hide();
-    m_region->hide();
-    m_connectForm->labelForField(m_protocol)->hide();
-    m_protocol->hide();
     m_connectButtons->show();
 }
 

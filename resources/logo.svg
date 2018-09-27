@@ -45,26 +45,26 @@
      id="style2">
 	.st0{fill:#F5F7FC;}
 	.st1{fill:#CAC0DF;}
-</style><g
-     id="g20"
-     transform="matrix(1.174646,0,0,1.174646,-30.214737,1.3904817)"><text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="87.279747"
-       y="100.7643"
-       id="text4563"><tspan
-         sodipodi:role="line"
-         id="tspan4561"
-         x="87.279747"
-         y="136.15492" /></text>
+</style><text
+     id="text4563"
+     y="119.75286"
+     x="72.308067"
+     style="font-style:normal;font-weight:normal;font-size:46.98583984px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.17464602"
+     xml:space="preserve"><tspan
+       y="161.32431"
+       x="72.308067"
+       id="tspan4561"
+       sodipodi:role="line"
+       style="stroke-width:1.17464602" /></text>
 <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#cac0df;fill-opacity:1;stroke:none"
-       x="84.493263"
-       y="60.315395"
-       id="text4567"><tspan
-         sodipodi:role="line"
-         id="tspan4565"
-         x="84.493263"
-         y="60.315395">Astrovpn</tspan></text>
-</g></svg>
+     id="text4567"
+     y="72.239723"
+     x="69.034935"
+     style="font-style:normal;font-weight:normal;font-size:46.98583984px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#cac0df;fill-opacity:1;stroke:none;stroke-width:1.17464602"
+     xml:space="preserve"><tspan
+       y="72.239723"
+       x="69.034935"
+       id="tspan4565"
+       sodipodi:role="line"
+       style="stroke-width:1.17464602">AstroVPN</tspan></text>
+</svg>

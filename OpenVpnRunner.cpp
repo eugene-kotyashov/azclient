@@ -113,12 +113,10 @@ bool OpenVpnRunner::connect(const QString &config, const QString &username, cons
 
     arguments << "--config" << QDir(qApp->applicationDirPath()).filePath("lib//testdev1.ovpn");
     qInfo() << "using config file " << QDir(qApp->applicationDirPath()).filePath("lib//testdev1.ovpn");
+    arguments << "--log" << QDir(qApp->applicationDirPath()).filePath("lib//ovpnLog.txt");
 	arguments << "--verb" << "3";
 	arguments << "--management" << "127.0.0.1" << QString::number(m_managementServer->serverPort());
-	arguments << "--management-client";
-	arguments << "--management-query-passwords";
-	arguments << "--management-hold";
-	arguments << "--suppress-timestamps";
+    arguments << "--management-client";
 
 #if !defined(Q_OS_WIN)
 	arguments << "--log" << "/dev/stderr"; /* No stdio buffering. */
@@ -201,7 +199,6 @@ void OpenVpnRunner::managementSetup()
 	m_managementConnection->write("state on\n");
 	m_managementConnection->write("state\n");
 	m_managementConnection->write("bytecount 1\n");
-	m_managementConnection->write("hold release\n");
 }
 
 void OpenVpnRunner::managmentReadLine()
@@ -228,7 +225,7 @@ void OpenVpnRunner::managmentReadLine()
                 }
                 emit connected();
             }
-			else if (line.contains(",RECONNECTING,") || line.contains(",CONNECTING,"))
+            else if (line.contains(",RECONNECTING,") || line.contains(",CONNECTING,"))
 				emit connecting();
 		} else if (line.startsWith(">BYTECOUNT:")) {
 			const QStringList colon = line.split(':');

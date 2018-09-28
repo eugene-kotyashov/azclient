@@ -118,7 +118,6 @@ ConnectionWindow::ConnectionWindow(QWidget *parent)
     //setLayout(m_layout);
 
     m_statusIcon->setStatus(StatusIcon::Disconnected);
-    setStatusText();
     showConnect();
 
 	connect(m_powerNotifier, &PowerNotifier::resumed, this, [=]() {
@@ -185,7 +184,10 @@ void ConnectionWindow::showConnect()
 	m_layout->addLayout(m_connectForm);
     m_layout->addWidget(m_connectButtons);
 
+    m_connect->setEnabled(true);
+    m_disconnect->setEnabled(false);
     m_connectButtons->show();
+
 }
 
 void ConnectionWindow::populateRegions()
@@ -216,37 +218,35 @@ void ConnectionWindow::validateFields()
 
 void ConnectionWindow::startOpenVpn()
 {
-//	if (config.length() == 0) {
-//		setStatusText();
-//		setEnabled(true);
-//		LogWindow::instance().show();
-//		return;
-//	}
-
 	OpenVpnRunner *runner = new OpenVpnRunner(this);
     ProxyRunner* proxyRunner = new ProxyRunner(this);
+    bool proxyRunnerStarted = false;
 
 	connect(runner, &OpenVpnRunner::transfer, m_statusIcon, &StatusIcon::setTransfer);
 
 	connect(runner, &OpenVpnRunner::disconnected, this, [=]() {
-		show();
-		setEnabled(true);        
+
+        setEnabled(true);
         proxyRunner->disconnect();
         proxyRunner->deleteLater();
-		m_statusIcon->setStatus(StatusIcon::Disconnected);
-		setStatusText(runner->disconnectReason());
+        m_statusIcon->setStatus(StatusIcon::Disconnected);
+        setStatusText(runner->disconnectReason());
         m_connect->setEnabled(true);
+        show();
 	});
-	connect(runner, &OpenVpnRunner::connected, this, [=]() {
+    connect(runner, &OpenVpnRunner::connected, this, [=,&proxyRunnerStarted]() {
         hide();
         setEnabled(true);
 
         setStatusText("Connected");
 //start proxy here
-        if (!proxyRunner->connect(runner->internalVPNIo())) {
-            qCritical() << "proxyRunner->connect failed!";
-            disconnect();
-            return;
+        if (!proxyRunnerStarted){
+            if ( !proxyRunner->connect(runner->internalVPNIo())) {
+                qCritical() << "proxyRunner->connect failed!";
+                runner->disconnect();
+                return;
+            }
+            proxyRunnerStarted = true;
         }
 		m_statusIcon->setStatus(StatusIcon::Connected);
 	});

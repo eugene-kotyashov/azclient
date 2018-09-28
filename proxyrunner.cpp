@@ -132,8 +132,7 @@ bool ProxyRunner::connect(const QString& internalIp)
         qCritical() << "Config File Write Error:" << configFile->errorString();
         return false;
     }
-    /* Presumably QTemporaryFile already sets the umask correctly and isn't totally
-     * dumb when it comes to safe file creation, but just in case... */
+
     if (!configFile->setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner)) {
         qCritical() << "Config File Permissions Error:" << configFile->errorString();
         return false;
@@ -167,7 +166,6 @@ bool ProxyRunner::connect(const QString& internalIp)
     QObject::connect(m_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=](int, QProcess::ExitStatus) {
         if (!m_hasDisconnected) {
             m_hasDisconnected = true;
-            emit disconnected();
         }
         deleteLater();
     });
@@ -198,6 +196,6 @@ void ProxyRunner::disconnect()
         emit disconnected();
     }
 
-    if (m_process->state() == QProcess::NotRunning)
+    if (m_process && (m_process->state() == QProcess::NotRunning))
         deleteLater();
 }
